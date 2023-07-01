@@ -1,5 +1,18 @@
 import { Client } from '../models';
 
+export const existClientId = async ( id: string ) => {
+
+
+    const isExistClient = await Client.findByPk( id );
+
+    if( !isExistClient ){
+        throw new Error(`No existe clienten con el id ${ id }`);
+    }
+    
+
+
+}
+
 export const existPhone = async ( phone: string ) => {
 
 

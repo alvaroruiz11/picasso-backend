@@ -12,6 +12,7 @@ router.get('/', controllers_1.getClients);
 router.get('/:term', controllers_1.getClientByTerm);
 // createClient
 router.post('/', [
+    middlewares_1.validateJWT,
     (0, express_validator_1.check)('cedula', 'La cedula tiene que ser más de 7 digitos').isLength({ min: 7 }),
     (0, express_validator_1.check)('firstName', 'El nombre es obligatorio').not().isEmpty(),
     (0, express_validator_1.check)('lastName', 'El apellido es obligatorio').not().isEmpty(),
@@ -21,8 +22,24 @@ router.post('/', [
     middlewares_1.validateBody
 ], controllers_1.createClient);
 // updateClient
-router.put('/:id', controllers_1.updateClient);
+router.put('/:id', [
+    middlewares_1.validateJWT,
+    (0, express_validator_1.check)('id', 'Tiene que ser un ID de UUID').isUUID(),
+    (0, express_validator_1.check)('id').custom(helpers_1.existClientId),
+    (0, express_validator_1.check)('cedula', 'La cedula tiene que ser más de 7 digitos').isLength({ min: 7 }),
+    (0, express_validator_1.check)('firstName', 'El nombre es obligatorio').not().isEmpty(),
+    (0, express_validator_1.check)('lastName', 'El apellido es obligatorio').not().isEmpty(),
+    (0, express_validator_1.check)('addres', 'La direccion es obligatorio').not().isEmpty(),
+    (0, express_validator_1.check)('phone', 'El numero de celular tiene que ser más de 8 digitos').isLength({ min: 8 }),
+    (0, express_validator_1.check)('phone').custom(helpers_1.existPhone),
+    middlewares_1.validateBody
+], controllers_1.updateClient);
 // deleteClient
-router.put('/:id', controllers_1.deleteClient);
+router.put('/:id', [
+    middlewares_1.validateJWT,
+    (0, express_validator_1.check)('id', 'Tiene que ser un ID de UUID').isUUID(),
+    (0, express_validator_1.check)('id').custom(helpers_1.existClientId),
+    middlewares_1.validateBody
+], controllers_1.deleteClient);
 exports.default = router;
 //# sourceMappingURL=clients.js.map

@@ -56,6 +56,7 @@ export const createUser = async ( req: Request, res: Response ) => {
             }
         });
 
+
         if( existEmail ) {
            return res.status( 400 ).json({
                 msg: `Ya existe un usuario con el email ${ email }`

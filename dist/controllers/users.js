@@ -79,7 +79,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const salt = bcryptjs_1.default.genSaltSync();
         user.password = bcryptjs_1.default.hashSync(password, salt);
         yield user.save();
-        // TODO - generar JWT?
+        // TODO - generar token?
         res.json(user);
     }
     catch (error) {

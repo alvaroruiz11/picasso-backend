@@ -9,8 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.existPhone = void 0;
+exports.existPhone = exports.existClientId = void 0;
 const models_1 = require("../models");
+const existClientId = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExistClient = yield models_1.Client.findByPk(id);
+    if (!isExistClient) {
+        throw new Error(`No existe clienten con el id ${id}`);
+    }
+});
+exports.existClientId = existClientId;
 const existPhone = (phone) => __awaiter(void 0, void 0, void 0, function* () {
     const isExistPhone = yield models_1.Client.findOne({
         where: {

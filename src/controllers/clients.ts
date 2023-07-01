@@ -61,17 +61,19 @@ export const createClient = async ( req: Request, res: Response ) => {
 
     try {
         
-        const isExistCedula = await Client.findOne({
+        const existCedula = await Client.findOne({
             where: {
                 cedula
             }
-        });
+        })
 
-        if( isExistCedula ) {
-            return res.json( 400 ).json({
+        
+        if( existCedula ) {
+            return res.status( 400 ).json({
                 msg: `Ya existe la cedula ${ cedula }`
             })
         }
+
         const client = Client.build({ cedula, firstName, lastName, addres, phone} as ClientInstance );
 
         await client.save();
@@ -86,13 +88,56 @@ export const createClient = async ( req: Request, res: Response ) => {
     }
 
 }
-export const updateClient = ( _req: Request, res: Response ) => {
+export const updateClient = async ( req: Request, res: Response ) => {
 
-    res.json('updateClient');
+    const { id } = req.params;
+
+    const { status, id:idClient, ...body } = req.body;
+
+    try {
+        
+
+        const existCedula = await Client.findOne({
+            where: {
+                cedula: body.cedula
+            }
+        })
+
+        
+        if( existCedula ) {
+            return res.status( 400 ).json({
+                msg: `Ya existe la cedula ${ body.cedula }`
+            })
+        }
+
+        const client = await Client.findByPk( id );
+        
+        await client?.update( body );
+        
+
+
+    } catch (error) {
+        
+    }
 
 }
-export const deleteClient = ( _req: Request, res: Response ) => {
+export const deleteClient = async ( req: Request, res: Response ) => {
 
-    res.json('deleteClient');
+    const { id } = req.params;
+
+    try {
+        
+        const client = await Client.findByPk( id );
+
+        await client?.update({ status: 0 });
+
+        res.json( client );
+
+    } catch (error) {
+        console.log( error );
+        res.status( 500 ).json({
+            msg: 'Hable con el administrador'
+        });
+    }
 
 }

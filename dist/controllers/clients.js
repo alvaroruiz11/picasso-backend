@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -59,13 +70,13 @@ exports.getClientByTerm = getClientByTerm;
 const createClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { cedula, firstName, lastName, addres, phone } = req.body;
     try {
-        const isExistCedula = yield models_1.Client.findOne({
+        const existCedula = yield models_1.Client.findOne({
             where: {
                 cedula
             }
         });
-        if (isExistCedula) {
-            return res.json(400).json({
+        if (existCedula) {
+            return res.status(400).json({
                 msg: `Ya existe la cedula ${cedula}`
             });
         }
@@ -81,12 +92,40 @@ const createClient = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.createClient = createClient;
-const updateClient = (_req, res) => {
-    res.json('updateClient');
-};
+const updateClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const _a = req.body, { status, id: idClient } = _a, body = __rest(_a, ["status", "id"]);
+    try {
+        const existCedula = yield models_1.Client.findOne({
+            where: {
+                cedula: body.cedula
+            }
+        });
+        if (existCedula) {
+            return res.status(400).json({
+                msg: `Ya existe la cedula ${body.cedula}`
+            });
+        }
+        const client = yield models_1.Client.findByPk(id);
+        yield (client === null || client === void 0 ? void 0 : client.update(body));
+    }
+    catch (error) {
+    }
+});
 exports.updateClient = updateClient;
-const deleteClient = (_req, res) => {
-    res.json('deleteClient');
-};
+const deleteClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const client = yield models_1.Client.findByPk(id);
+        yield (client === null || client === void 0 ? void 0 : client.update({ status: 0 }));
+        res.json(client);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Hable con el administrador'
+        });
+    }
+});
 exports.deleteClient = deleteClient;
 //# sourceMappingURL=clients.js.map
